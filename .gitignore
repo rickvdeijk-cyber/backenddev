@@ -1,0 +1,58 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.log
+*.tmp
+*.temp
+*.swp
+*.bak
+*.orig
+
+# Visual Studio
+.vs/
+.vscode/
+*.sln.cache
+*.sln.DotSettings.user
+
+# Logs
+logs/
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+.nuget/
+
+# IDEs
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build outputs
+*.dll
+*.exe
+*.pdb
+*.exe.config
+*.dll.config
+
+# Test results
+TestResults/
+*.trx
+
+# Coverage
+*.coverage
+*.coveragexml
+
+# Rider
+.idea/
+
+# User-specific files
+appsettings.Development.json
+appsettings.Local.json

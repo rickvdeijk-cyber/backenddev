@@ -26,7 +26,8 @@ public class TokenAuthenticationMiddleware
 
         if (path?.StartsWith("/api/auth") == true ||    // future login endpoint
             path?.StartsWith("/swagger") == true ||
-            path?.StartsWith("/health") == true)
+            path?.StartsWith("/health") == true ||
+            path?.StartsWith("/api/users") == true)    // allow GET users
         {
             await _next(context);
             return;
