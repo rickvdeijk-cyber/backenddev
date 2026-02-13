@@ -9,10 +9,7 @@ public class TokenAuthenticationMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<TokenAuthenticationMiddleware> _logger;
-
-    // For demo: hardcoded valid token
-    // In real app → read from config, secrets, or validate JWT properly
-    private const string ValidToken = "supersecret-token-12345";  // CHANGE THIS!
+    private const string ValidToken = "supersecret-token-12345";  
 
     public TokenAuthenticationMiddleware(RequestDelegate next, ILogger<TokenAuthenticationMiddleware> logger)
     {
@@ -22,14 +19,13 @@ public class TokenAuthenticationMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        // Skip auth check for public endpoints (e.g. login, health, swagger in dev)
         var path = context.Request.Path.Value?.ToLowerInvariant();
         var method = context.Request.Method.ToUpperInvariant();
 
-        if (path?.StartsWith("/api/auth") == true ||    // future login endpoint
+        if (path?.StartsWith("/api/auth") == true || 
             path?.StartsWith("/swagger") == true ||
             path?.StartsWith("/health") == true ||
-            (path?.StartsWith("/api/users") == true && method == "GET"))    // allow GET users only
+            (path?.StartsWith("/api/users") == true && method == "GET"))  
         {
             await _next(context);
             return;
@@ -47,7 +43,6 @@ public class TokenAuthenticationMiddleware
         var headerValue = authHeader.ToString();
         _logger.LogInformation("Received Authorization header: '{Header}'", headerValue);
 
-        // Expect "Bearer <token>"
         if (!headerValue.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
         {
             _logger.LogWarning("Invalid Authorization scheme (expected Bearer)");
@@ -66,7 +61,6 @@ public class TokenAuthenticationMiddleware
             return;
         }
 
-        // Token is valid → set user for [Authorize] and continue
         var claims = new[] { new Claim(ClaimTypes.Name, "api-user") };
         var identity = new ClaimsIdentity(claims, "Bearer");
         context.User = new ClaimsPrincipal(identity);

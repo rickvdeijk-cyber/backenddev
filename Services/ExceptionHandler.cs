@@ -1,4 +1,3 @@
-// ExceptionHandler.cs
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -29,7 +28,6 @@ public class GlobalExceptionHandler : IExceptionHandler
             Instance = httpContext.Request.Path
         };
 
-        // Handle specific exceptions
         if (exception is ArgumentException or ArgumentNullException)
         {
             problemDetails.Status = StatusCodes.Status400BadRequest;
@@ -60,6 +58,6 @@ public class GlobalExceptionHandler : IExceptionHandler
 
         await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken);
 
-        return true; // exception handled
+        return true;
     }
 }

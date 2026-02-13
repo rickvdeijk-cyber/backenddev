@@ -39,7 +39,6 @@ var app = builder.Build();
 app.UseExceptionHandling();
 app.UseOpenApi();     
 app.UseSwaggerUi();   
-// app.UseHttpsRedirection();  // Commented out to avoid redirect issues with Swagger
 app.UseRequestLogging();
 app.UseTokenAuthentication();
 app.UseAuthentication();
