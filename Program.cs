@@ -17,6 +17,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddSingleton<UserManagementAPI.Services.UserService>();
 
+builder.Services.AddAuthentication();
+
 builder.Services.AddOpenApiDocument(settings =>
 {
     settings.Title = "User Management API";
@@ -25,7 +27,7 @@ builder.Services.AddOpenApiDocument(settings =>
     settings.AddSecurity("Bearer", new NSwag.OpenApiSecurityScheme
     {
         Type = NSwag.OpenApiSecuritySchemeType.Http,
-        Scheme = "bearer",
+        Scheme = "Bearer",
         BearerFormat = "JWT",
         Description = "Enter JWT token"
     });
@@ -37,9 +39,11 @@ var app = builder.Build();
 app.UseExceptionHandling();
 app.UseOpenApi();     
 app.UseSwaggerUi();   
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();  // Commented out to avoid redirect issues with Swagger
 app.UseRequestLogging();
 app.UseTokenAuthentication();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

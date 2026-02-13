@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace UserManagementAPI.Middleware;
 
@@ -23,11 +24,12 @@ public class TokenAuthenticationMiddleware
     {
         // Skip auth check for public endpoints (e.g. login, health, swagger in dev)
         var path = context.Request.Path.Value?.ToLowerInvariant();
+        var method = context.Request.Method.ToUpperInvariant();
 
         if (path?.StartsWith("/api/auth") == true ||    // future login endpoint
             path?.StartsWith("/swagger") == true ||
             path?.StartsWith("/health") == true ||
-            path?.StartsWith("/api/users") == true)    // allow GET users
+            (path?.StartsWith("/api/users") == true && method == "GET"))    // allow GET users only
         {
             await _next(context);
             return;
@@ -43,6 +45,7 @@ public class TokenAuthenticationMiddleware
         }
 
         var headerValue = authHeader.ToString();
+        _logger.LogInformation("Received Authorization header: '{Header}'", headerValue);
 
         // Expect "Bearer <token>"
         if (!headerValue.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
@@ -63,8 +66,10 @@ public class TokenAuthenticationMiddleware
             return;
         }
 
-        // Token is valid → continue to next middleware / endpoint
-        // (in real JWT app you would set HttpContext.User here)
+        // Token is valid → set user for [Authorize] and continue
+        var claims = new[] { new Claim(ClaimTypes.Name, "api-user") };
+        var identity = new ClaimsIdentity(claims, "Bearer");
+        context.User = new ClaimsPrincipal(identity);
 
         await _next(context);
     }

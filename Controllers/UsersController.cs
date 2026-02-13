@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserManagementAPI.Models;
 using UserManagementAPI.Services;
@@ -54,6 +55,7 @@ public class UsersController : ControllerBase
     /// <param name="user">The user data.</param>
     /// <returns>The created user.</returns>
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<User>> CreateUser([FromBody] User user)
     {
         var createdUser = _userService.CreateUser(user);
