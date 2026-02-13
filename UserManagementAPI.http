@@ -1,0 +1,82 @@
+@UserManagementAPI_HostAddress = http://localhost:5096
+
+# Test GET all users (should succeed, log request/response)
+GET {{UserManagementAPI_HostAddress}}/api/users
+Accept: application/json
+
+###
+
+# Test GET user by ID (existing)
+GET {{UserManagementAPI_HostAddress}}/api/users/1
+Accept: application/json
+
+###
+
+# Test GET user by ID (non-existing, should 404)
+GET {{UserManagementAPI_HostAddress}}/api/users/999
+Accept: application/json
+
+###
+
+# Test POST user without auth (should 401)
+POST {{UserManagementAPI_HostAddress}}/api/users
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "department": "Test"
+}
+
+###
+
+# Test POST user with invalid data (should 400 from validation)
+POST {{UserManagementAPI_HostAddress}}/api/users
+Content-Type: application/json
+Authorization: Bearer supersecret-token-12345
+
+{
+  "name": "",
+  "email": "invalid",
+  "department": ""
+}
+
+###
+
+# Test POST user with valid data (needs simple Bearer token)
+POST {{UserManagementAPI_HostAddress}}/api/users
+Content-Type: application/json
+Authorization: Bearer supersecret-token-12345
+
+{
+  "name": "New User",
+  "email": "new@example.com",
+  "department": "Engineering"
+}
+
+###
+
+# Test PUT user (needs auth)
+PUT {{UserManagementAPI_HostAddress}}/api/users/1
+Content-Type: application/json
+Authorization: Bearer supersecret-token-12345
+
+{
+  "name": "Updated Name",
+  "email": "updated@example.com",
+  "department": "Updated Dept"
+}
+
+###
+
+# Test DELETE user (needs auth)
+DELETE {{UserManagementAPI_HostAddress}}/api/users/3
+Authorization: Bearer supersecret-token-12345
+
+###
+
+# Test exception handling (should return 500 with custom response)
+GET {{UserManagementAPI_HostAddress}}/api/users/test-exception
+Accept: application/json
+
+###
